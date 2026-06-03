@@ -10,9 +10,9 @@ API REST em **Java 17** e **Spring Boot 3.4**, com persistência em **Oracle**, 
 
 | Item | Link |
 |------|------|
-| Repositório GitHub | `https://github.com/SEU_USUARIO/nutrispace` |
-| Deploy (API pública) | `https://SUA_URL_DEPLOY` |
-| Swagger / OpenAPI | `https://SUA_URL_DEPLOY/swagger-ui.html` |
+| Repositório GitHub | https://github.com/Lucasgastaop/NutriSpace-GS |
+| Deploy (API pública) | https://nutrispace-gs.onrender.com |
+| Swagger / OpenAPI | https://nutrispace-gs.onrender.com/swagger-ui.html |
 | Vídeo apresentação (até 10 min) | `https://youtu.be/SEU_VIDEO` |
 | Pitch GS (até 3 min) | `https://youtu.be/SEU_PITCH` |
 
@@ -51,20 +51,28 @@ com.nutrispace
 ├── controller   → REST, HATEOAS, tratamento global de erros
 ├── service      → Regras de negócio
 ├── repository   → Spring Data JPA
-├── model        → Entidades, enums, embeddables, herança JPA
+├── model        → Entidades JPA (8 tabelas TB_NS_*)
 ├── dto          → Request DTOs + Java Records de response
 ├── config       → Security, JWT, CORS, Swagger
 └── exception    → Exceções de domínio
 ```
 
-### Modelagem avançada JPA
+### Modelagem JPA
 
-| Recurso | Implementação |
-|---------|----------------|
-| `@Embedded` | `CondicoesIdeais`, `MedicaoAmbiental`, `CapacidadeReservatorio` |
-| `@MappedSuperclass` | `RegistroVinculadoEstufa`, `PessoaBase` |
-| Herança | `PessoaBase` → `Astronauta`; `RegistroVinculadoEstufa` → Alerta, Leitura, Colheita, Rega |
-| Agrupamento composto | `@Embeddable` agrupa campos relacionados (ex.: condições ideais da planta) |
+8 entidades `@Entity` — uma para cada tabela `TB_NS_*`:
+
+| Entidade | Tabela |
+|----------|--------|
+| `Planta` | `TB_NS_PLANTA` |
+| `Astronauta` | `TB_NS_ASTRONAUTA` |
+| `Estufa` | `TB_NS_ESTUFA` |
+| `Reservatorio` | `TB_NS_RESERVATORIO` |
+| `AlertaCritico` | `TB_NS_ALERTA_CRITICO` |
+| `LeituraSensor` | `TB_NS_LEITURA_SENSOR` |
+| `Colheita` | `TB_NS_COLHEITA` |
+| `HistoricoRega` | `TB_NS_HISTORICO_REGA` |
+
+Enums ficam dentro das entidades que os utilizam (`Estufa.StatusBomba`, `AlertaCritico.StatusAlerta`, etc.).
 
 ---
 
@@ -72,60 +80,47 @@ com.nutrispace
 
 - JDK 17+
 - Maven 3.9+
-- Oracle com schema e tabelas `TB_NS_*` (DDL da disciplina de database)
-- Sequences: `src/main/resources/db/sequences-oracle.sql`
+- Oracle FIAP com tabelas e dados já cadastrados (disciplina de database)
 
 ---
 
 ## Configuração e execução
 
-### Oracle (produção / entrega)
+### Oracle FIAP (padrão)
 
-1. Execute o DDL das tabelas `TB_NS_*` e, se necessário, `sequences-oracle.sql`.
-2. Credenciais em `src/main/resources/application-oracle.properties`:
+A API conecta ao Oracle FIAP e utiliza os **dados já existentes** no usuário `rm563960` (não é necessário rodar scripts SQL).
+
+Credenciais de conexão em `application-oracle.properties`:
 
 ```properties
-spring.datasource.url=jdbc:oracle:thin:@localhost:1521:ORCL
+spring.datasource.url=jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL
 spring.datasource.username=rm563960
 spring.datasource.password=020607
-spring.jpa.properties.hibernate.default_schema=NUTRISPACE
 ```
 
-3. Inicie com o perfil `oracle`:
-
-```bash
-./mvnw spring-boot:run -Dspring-boot.run.profiles=oracle
-```
-
-### Desenvolvimento (H2 em memória)
-
-O perfil padrão é `dev` (H2). Para executar:
+Inicie:
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
 API: `http://localhost:8080`  
-Swagger: `http://localhost:8080/swagger-ui.html`  
-Raiz HATEOAS: `http://localhost:8080/`
-
-Usuário seed (perfil `dev`): `admin@nutrispace.com` / `123456`
+Swagger: `http://localhost:8080/swagger-ui.html`
 
 ---
 
 ## Autenticação JWT
 
-1. Cadastre um astronauta: `POST /astronautas` (senha armazenada com BCrypt).
-2. Login: `POST /auth/login`
+1. Login com astronauta **já cadastrado no Oracle**: `POST /auth/login`
 
 ```json
 {
-  "email": "admin@nutrispace.com",
-  "senha": "123456"
+  "email": "lucas@nutrispace.com",
+  "senha": "senha123"
 }
 ```
 
-3. Envie o token nas demais rotas:
+2. Envie o token nas demais rotas:
 
 ```
 Authorization: Bearer {token}
@@ -176,18 +171,38 @@ Cobertura inclui testes unitários (`AlertaCriticoService`, `PlantaService`, `Jw
 Importe os arquivos da pasta `postman/`:
 
 - `NutriSpace.postman_collection.json`
-- `NutriSpace-Local.postman_environment.json`
+- `NutriSpace-Render.postman_environment.json` (deploy público)
+- `NutriSpace-Local.postman_environment.json` (localhost)
+
+**Como executar:** selecione o environment → clique com o botão direito na collection → **Run collection** → **Run NutriSpace API**. As requisições estão na ordem correta; mantenha **Keep variable values** marcado.
 
 ---
 
 ## Deploy
 
+O deploy no Render pode usar o Oracle FIAP se a rede permitir conexão externa. Configure no Render:
+
+| Variável | Valor |
+|----------|-------|
+| `SPRING_PROFILES_ACTIVE` | `oracle` |
+| `SPRING_DATASOURCE_URL` | `jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL` |
+| `SPRING_DATASOURCE_USERNAME` | `rm563960` |
+| `SPRING_DATASOURCE_PASSWORD` | `020607` |
+
+Localmente / entrega FIAP:
+
+```bash
+./mvnw spring-boot:run
+```
+
+Docker (Oracle remoto acessível):
+
 ```bash
 docker build -t nutrispace-api .
 docker run -p 8080:8080 \
-  -e SPRING_DATASOURCE_URL=jdbc:oracle:thin:@host:1521:ORCL \
-  -e SPRING_DATASOURCE_USERNAME=user \
-  -e SPRING_DATASOURCE_PASSWORD=pass \
+  -e SPRING_DATASOURCE_URL=jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL \
+  -e SPRING_DATASOURCE_USERNAME=rm563960 \
+  -e SPRING_DATASOURCE_PASSWORD=020607 \
   -e SPRING_PROFILES_ACTIVE=oracle \
   nutrispace-api
 ```

@@ -9,4 +9,6 @@ import com.nutrispace.model.HistoricoRega;
 public interface HistoricoRegaRepository extends JpaRepository<HistoricoRega, Long> {
 
 	List<HistoricoRega> findByEstufaIdEstufaOrderByDtHrRegaDesc(Long idEstufa);
+
+	void deleteByEstufaIdEstufa(Long idEstufa);
 }

@@ -26,4 +26,8 @@ public interface EstufaRepository extends JpaRepository<Estufa, Long> {
 
 	@Query("SELECT e FROM Estufa e JOIN FETCH e.planta WHERE e.idEstufa = :id")
 	Optional<Estufa> findByIdWithPlanta(@Param("id") Long id);
+
+	boolean existsByPlantaIdPlanta(Long idPlanta);
+
+	boolean existsByAstronautaIdAstronauta(Long idAstronauta);
 }

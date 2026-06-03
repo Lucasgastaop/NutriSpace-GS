@@ -2,7 +2,7 @@ package com.nutrispace.dto;
 
 import java.time.LocalDateTime;
 
-import com.nutrispace.model.StatusAlerta;
+import com.nutrispace.model.AlertaCritico.StatusAlerta;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

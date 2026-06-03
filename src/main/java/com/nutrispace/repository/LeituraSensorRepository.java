@@ -9,4 +9,6 @@ import com.nutrispace.model.LeituraSensor;
 public interface LeituraSensorRepository extends JpaRepository<LeituraSensor, Long> {
 
 	List<LeituraSensor> findByEstufaIdEstufaOrderByDtHrLeituraDesc(Long idEstufa);
+
+	void deleteByEstufaIdEstufa(Long idEstufa);
 }

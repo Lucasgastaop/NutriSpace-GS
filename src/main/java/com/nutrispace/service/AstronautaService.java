@@ -14,6 +14,7 @@ import com.nutrispace.exception.ResourceNotFoundException;
 import com.nutrispace.model.Astronauta;
 import com.nutrispace.dto.LoginResponseRecord;
 import com.nutrispace.repository.AstronautaRepository;
+import com.nutrispace.repository.EstufaRepository;
 import com.nutrispace.config.JwtService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class AstronautaService {
 
 	private final AstronautaRepository astronautaRepository;
+	private final EstufaRepository estufaRepository;
 	private final JwtService jwtService;
 	private final PasswordEncoder passwordEncoder;
 
@@ -60,6 +62,9 @@ public class AstronautaService {
 	public void excluir(Long id) {
 		if (!astronautaRepository.existsById(id)) {
 			throw new ResourceNotFoundException("Astronauta não encontrado com id: " + id);
+		}
+		if (estufaRepository.existsByAstronautaIdAstronauta(id)) {
+			throw new BusinessException("Não é possível excluir astronauta vinculado a estufa");
 		}
 		astronautaRepository.deleteById(id);
 	}

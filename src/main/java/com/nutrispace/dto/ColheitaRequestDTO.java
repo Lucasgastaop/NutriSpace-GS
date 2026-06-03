@@ -2,7 +2,7 @@ package com.nutrispace.dto;
 
 import java.time.LocalDateTime;
 
-import com.nutrispace.model.QualidadeColheita;
+import com.nutrispace.model.Colheita.QualidadeColheita;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

@@ -1,9 +1,9 @@
 package com.nutrispace.model;
 
-import com.nutrispace.model.CapacidadeReservatorio;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -32,32 +32,15 @@ public class Reservatorio {
 	@Column(name = "ID_RESERVATORIO")
 	private Long idReservatorio;
 
-	@Embedded
-	private CapacidadeReservatorio capacidade = new CapacidadeReservatorio();
+	@JdbcTypeCode(SqlTypes.NUMERIC)
+	@Column(name = "CAPACIDADE_MAX_LITROS")
+	private Double capacidadeMaxLitros;
+
+	@JdbcTypeCode(SqlTypes.NUMERIC)
+	@Column(name = "NIVEL_ATUAL_PERCENTUAL")
+	private Double nivelAtualPercentual;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ID_ESTUFA", nullable = false)
 	private Estufa estufa;
-
-	public Double getCapacidadeMaxLitros() {
-		return capacidade != null ? capacidade.getCapacidadeMaxLitros() : null;
-	}
-
-	public Double getNivelAtualPercentual() {
-		return capacidade != null ? capacidade.getNivelAtualPercentual() : null;
-	}
-
-	public void setCapacidadeMaxLitros(Double value) {
-		if (capacidade == null) {
-			capacidade = new CapacidadeReservatorio();
-		}
-		capacidade.setCapacidadeMaxLitros(value);
-	}
-
-	public void setNivelAtualPercentual(Double value) {
-		if (capacidade == null) {
-			capacidade = new CapacidadeReservatorio();
-		}
-		capacidade.setNivelAtualPercentual(value);
-	}
 }

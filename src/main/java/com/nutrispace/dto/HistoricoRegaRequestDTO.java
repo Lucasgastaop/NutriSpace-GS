@@ -2,7 +2,7 @@ package com.nutrispace.dto;
 
 import java.time.LocalDateTime;
 
-import com.nutrispace.model.TipoRega;
+import com.nutrispace.model.HistoricoRega.TipoRega;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

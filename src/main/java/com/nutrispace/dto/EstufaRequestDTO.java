@@ -1,6 +1,6 @@
 package com.nutrispace.dto;
 
-import com.nutrispace.model.StatusBomba;
+import com.nutrispace.model.Estufa.StatusBomba;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

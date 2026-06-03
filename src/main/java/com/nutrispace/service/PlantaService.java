@@ -11,6 +11,7 @@ import com.nutrispace.exception.BusinessException;
 import com.nutrispace.exception.ResourceNotFoundException;
 import com.nutrispace.model.Planta;
 import com.nutrispace.dto.PlantaResponseRecord;
+import com.nutrispace.repository.EstufaRepository;
 import com.nutrispace.repository.PlantaRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class PlantaService {
 
 	private final PlantaRepository plantaRepository;
+	private final EstufaRepository estufaRepository;
 
 	@Transactional(readOnly = true)
 	public List<PlantaResponseRecord> listarTodasRecords() {
@@ -71,6 +73,9 @@ public class PlantaService {
 	public void excluir(Long id) {
 		if (!plantaRepository.existsById(id)) {
 			throw new ResourceNotFoundException("Planta não encontrada com id: " + id);
+		}
+		if (estufaRepository.existsByPlantaIdPlanta(id)) {
+			throw new BusinessException("Não é possível excluir planta vinculada a estufa");
 		}
 		plantaRepository.deleteById(id);
 	}

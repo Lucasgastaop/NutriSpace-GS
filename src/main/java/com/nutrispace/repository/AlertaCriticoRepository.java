@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.nutrispace.model.AlertaCritico;
-import com.nutrispace.model.StatusAlerta;
+import com.nutrispace.model.AlertaCritico.StatusAlerta;
 
 public interface AlertaCriticoRepository extends JpaRepository<AlertaCritico, Long> {
 
@@ -26,4 +26,6 @@ public interface AlertaCriticoRepository extends JpaRepository<AlertaCritico, Lo
 	@Query("SELECT a FROM AlertaCritico a JOIN FETCH a.estufa e JOIN FETCH e.planta "
 			+ "WHERE e.idEstufa = :idEstufa ORDER BY a.dtHrAlerta DESC")
 	List<AlertaCritico> findByEstufaIdWithPlanta(@Param("idEstufa") Long idEstufa);
+
+	void deleteByEstufaIdEstufa(Long idEstufa);
 }

@@ -1,6 +1,6 @@
 package com.nutrispace.dto;
 
-import com.nutrispace.model.StatusBomba;
+import com.nutrispace.model.Estufa.StatusBomba;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

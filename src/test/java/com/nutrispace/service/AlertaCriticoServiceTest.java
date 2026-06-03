@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.nutrispace.model.AlertaCritico;
 import com.nutrispace.model.Estufa;
 import com.nutrispace.model.Planta;
-import com.nutrispace.model.StatusAlerta;
+import com.nutrispace.model.AlertaCritico.StatusAlerta;
 import com.nutrispace.repository.AlertaCriticoRepository;
 import com.nutrispace.service.AlertaCriticoService;
 import com.nutrispace.service.EstufaService;

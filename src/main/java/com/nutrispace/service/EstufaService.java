@@ -12,8 +12,13 @@ import com.nutrispace.model.Astronauta;
 import com.nutrispace.model.Estufa;
 import com.nutrispace.model.Planta;
 import com.nutrispace.model.Reservatorio;
+import com.nutrispace.repository.AlertaCriticoRepository;
 import com.nutrispace.repository.AstronautaRepository;
+import com.nutrispace.repository.ColheitaRepository;
 import com.nutrispace.repository.EstufaRepository;
+import com.nutrispace.repository.HistoricoRegaRepository;
+import com.nutrispace.repository.LeituraSensorRepository;
+import com.nutrispace.repository.ReservatorioRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +29,11 @@ public class EstufaService {
 	private final EstufaRepository estufaRepository;
 	private final PlantaService plantaService;
 	private final AstronautaRepository astronautaRepository;
+	private final ReservatorioRepository reservatorioRepository;
+	private final LeituraSensorRepository leituraSensorRepository;
+	private final AlertaCriticoRepository alertaCriticoRepository;
+	private final ColheitaRepository colheitaRepository;
+	private final HistoricoRegaRepository historicoRegaRepository;
 
 	@Transactional(readOnly = true)
 	public List<EstufaResponseDTO> listarTodas() {
@@ -54,6 +64,11 @@ public class EstufaService {
 		if (!estufaRepository.existsById(id)) {
 			throw new ResourceNotFoundException("Estufa não encontrada com id: " + id);
 		}
+		reservatorioRepository.findByEstufaIdEstufa(id).ifPresent(reservatorioRepository::delete);
+		leituraSensorRepository.deleteByEstufaIdEstufa(id);
+		alertaCriticoRepository.deleteByEstufaIdEstufa(id);
+		colheitaRepository.deleteByEstufaIdEstufa(id);
+		historicoRegaRepository.deleteByEstufaIdEstufa(id);
 		estufaRepository.deleteById(id);
 	}
 

@@ -9,4 +9,6 @@ import com.nutrispace.model.Colheita;
 public interface ColheitaRepository extends JpaRepository<Colheita, Long> {
 
 	List<Colheita> findByEstufaIdEstufaOrderByDtColheitaDesc(Long idEstufa);
+
+	void deleteByEstufaIdEstufa(Long idEstufa);
 }

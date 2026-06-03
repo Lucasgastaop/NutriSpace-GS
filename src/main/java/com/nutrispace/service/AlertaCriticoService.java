@@ -13,7 +13,7 @@ import com.nutrispace.exception.ResourceNotFoundException;
 import com.nutrispace.model.AlertaCritico;
 import com.nutrispace.model.Estufa;
 import com.nutrispace.model.Planta;
-import com.nutrispace.model.StatusAlerta;
+import com.nutrispace.model.AlertaCritico.StatusAlerta;
 import com.nutrispace.repository.AlertaCriticoRepository;
 
 import lombok.RequiredArgsConstructor;

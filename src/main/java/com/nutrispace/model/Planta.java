@@ -1,9 +1,9 @@
 package com.nutrispace.model;
 
-import com.nutrispace.model.CondicoesIdeais;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,39 +32,15 @@ public class Planta {
 	@Column(name = "NOME_PLANTA", length = 80)
 	private String nomePlanta;
 
-	@Embedded
-	private CondicoesIdeais condicoesIdeais = new CondicoesIdeais();
+	@JdbcTypeCode(SqlTypes.NUMERIC)
+	@Column(name = "TEMP_MIN_IDEAL")
+	private Double tempMinIdeal;
 
-	public Double getTempMinIdeal() {
-		return condicoesIdeais != null ? condicoesIdeais.getTempMinIdeal() : null;
-	}
+	@JdbcTypeCode(SqlTypes.NUMERIC)
+	@Column(name = "TEMP_MAX_IDEAL")
+	private Double tempMaxIdeal;
 
-	public Double getTempMaxIdeal() {
-		return condicoesIdeais != null ? condicoesIdeais.getTempMaxIdeal() : null;
-	}
-
-	public Double getUmiMinIdeal() {
-		return condicoesIdeais != null ? condicoesIdeais.getUmiMinIdeal() : null;
-	}
-
-	public void setTempMinIdeal(Double value) {
-		if (condicoesIdeais == null) {
-			condicoesIdeais = new CondicoesIdeais();
-		}
-		condicoesIdeais.setTempMinIdeal(value);
-	}
-
-	public void setTempMaxIdeal(Double value) {
-		if (condicoesIdeais == null) {
-			condicoesIdeais = new CondicoesIdeais();
-		}
-		condicoesIdeais.setTempMaxIdeal(value);
-	}
-
-	public void setUmiMinIdeal(Double value) {
-		if (condicoesIdeais == null) {
-			condicoesIdeais = new CondicoesIdeais();
-		}
-		condicoesIdeais.setUmiMinIdeal(value);
-	}
+	@JdbcTypeCode(SqlTypes.NUMERIC)
+	@Column(name = "UMI_MIN_IDEAL")
+	private Double umiMinIdeal;
 }

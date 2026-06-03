@@ -16,13 +16,16 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Astronauta extends PessoaBase {
+public class Astronauta {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_ns_astronauta")
 	@SequenceGenerator(name = "seq_ns_astronauta", sequenceName = "SEQ_NS_ASTRONAUTA", allocationSize = 1)
 	@Column(name = "ID_ASTRONAUTA")
 	private Long idAstronauta;
+
+	@Column(name = "NOME", length = 50)
+	private String nome;
 
 	@Column(name = "CARGO", length = 50)
 	private String cargo;

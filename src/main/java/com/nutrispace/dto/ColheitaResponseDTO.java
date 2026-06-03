@@ -2,7 +2,7 @@ package com.nutrispace.dto;
 
 import java.time.LocalDateTime;
 
-import com.nutrispace.model.QualidadeColheita;
+import com.nutrispace.model.Colheita.QualidadeColheita;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

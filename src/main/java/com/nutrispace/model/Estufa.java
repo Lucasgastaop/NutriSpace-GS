@@ -1,7 +1,5 @@
 package com.nutrispace.model;
 
-import com.nutrispace.model.StatusBomba;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -27,6 +25,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Estufa {
+
+	public enum StatusBomba {
+		LIGADA,
+		DESLIGADA
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_ns_estufa")
