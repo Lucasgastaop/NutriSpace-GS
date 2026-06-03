@@ -1,0 +1,530 @@
+{
+	"info": {
+		"_postman_id": "nutrispace-api-collection",
+		"name": "NutriSpace API",
+		"description": "Collection para testar a API NutriSpace (FIAP GS).\n\n**Configuração:**\n1. Suba a API com perfil `dev` (porta 8080)\n2. Execute **Auth → Login** (credenciais abaixo)\n3. O token JWT é salvo automaticamente na variável `token`\n4. Execute as demais requisições na ordem sugerida das pastas\n\n**Usuário seed (perfil dev):**\n- E-mail: `admin@nutrispace.com`\n- Senha: `123456`",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "idPlanta",
+			"value": "1"
+		},
+		{
+			"key": "idAstronauta",
+			"value": "1"
+		},
+		{
+			"key": "idEstufa",
+			"value": "1"
+		},
+		{
+			"key": "idReservatorio",
+			"value": "1"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const json = pm.response.json();",
+									"    pm.collectionVariables.set('token', json.token);",
+									"    pm.collectionVariables.set('idAstronauta', json.idAstronauta);",
+									"    pm.test('Token JWT recebido', () => pm.expect(json.token).to.be.a('string'));",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@nutrispace.com\",\n  \"senha\": \"123456\"\n}"
+						},
+						"url": "{{baseUrl}}/auth/login"
+					}
+				}
+			]
+		},
+		{
+			"name": "Raiz HATEOAS",
+			"item": [
+				{
+					"name": "GET / (links)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"url": "{{baseUrl}}/"
+					}
+				}
+			]
+		},
+		{
+			"name": "Plantas",
+			"item": [
+				{
+					"name": "Listar plantas",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/plantas"
+					}
+				},
+				{
+					"name": "Criar planta",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const body = pm.response.json();",
+									"    const id = body.idPlanta || (body._embedded ? null : body.idPlanta);",
+									"    if (body.idPlanta) pm.collectionVariables.set('idPlanta', body.idPlanta);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nomePlanta\": \"Alface Espacial\",\n  \"tempMinIdeal\": 18.0,\n  \"tempMaxIdeal\": 26.0,\n  \"umiMinIdeal\": 55.0\n}"
+						},
+						"url": "{{baseUrl}}/plantas"
+					}
+				},
+				{
+					"name": "Buscar planta por ID",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/plantas/{{idPlanta}}"
+					}
+				},
+				{
+					"name": "Atualizar planta",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nomePlanta\": \"Alface Espacial v2\",\n  \"tempMinIdeal\": 18.0,\n  \"tempMaxIdeal\": 27.0,\n  \"umiMinIdeal\": 60.0\n}"
+						},
+						"url": "{{baseUrl}}/plantas/{{idPlanta}}"
+					}
+				},
+				{
+					"name": "Excluir planta",
+					"request": {
+						"method": "DELETE",
+						"url": "{{baseUrl}}/plantas/{{idPlanta}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "Astronautas",
+			"item": [
+				{
+					"name": "Listar astronautas",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/astronautas"
+					}
+				},
+				{
+					"name": "Criar astronauta",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"Lucas Silva\",\n  \"cargo\": \"Biólogo\",\n  \"email\": \"lucas@nutrispace.com\",\n  \"senha\": \"123456\"\n}"
+						},
+						"url": "{{baseUrl}}/astronautas"
+					}
+				},
+				{
+					"name": "Buscar astronauta por ID",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/astronautas/{{idAstronauta}}"
+					}
+				},
+				{
+					"name": "Atualizar astronauta",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"Lucas Silva\",\n  \"cargo\": \"Comandante de Estufa\",\n  \"email\": \"lucas@nutrispace.com\",\n  \"senha\": \"123456\"\n}"
+						},
+						"url": "{{baseUrl}}/astronautas/{{idAstronauta}}"
+					}
+				},
+				{
+					"name": "Excluir astronauta",
+					"request": {
+						"method": "DELETE",
+						"url": "{{baseUrl}}/astronautas/{{idAstronauta}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "Estufas",
+			"item": [
+				{
+					"name": "Listar estufas",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/estufas"
+					}
+				},
+				{
+					"name": "Criar estufa",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    pm.collectionVariables.set('idEstufa', pm.response.json().idEstufa);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nomeEstufa\": \"Estufa Alpha-1\",\n  \"statusBomba\": \"LIGADA\",\n  \"idPlanta\": {{idPlanta}},\n  \"idAstronauta\": {{idAstronauta}}\n}"
+						},
+						"url": "{{baseUrl}}/estufas"
+					}
+				},
+				{
+					"name": "Buscar estufa por ID",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/estufas/{{idEstufa}}"
+					}
+				},
+				{
+					"name": "Atualizar estufa",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nomeEstufa\": \"Estufa Alpha-1\",\n  \"statusBomba\": \"DESLIGADA\",\n  \"idPlanta\": {{idPlanta}},\n  \"idAstronauta\": {{idAstronauta}}\n}"
+						},
+						"url": "{{baseUrl}}/estufas/{{idEstufa}}"
+					}
+				},
+				{
+					"name": "Excluir estufa",
+					"request": {
+						"method": "DELETE",
+						"url": "{{baseUrl}}/estufas/{{idEstufa}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "Reservatórios",
+			"item": [
+				{
+					"name": "Listar reservatórios",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/reservatorios"
+					}
+				},
+				{
+					"name": "Criar reservatório",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    pm.collectionVariables.set('idReservatorio', pm.response.json().idReservatorio);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idEstufa\": {{idEstufa}},\n  \"capacidadeMaxLitros\": 500.0,\n  \"nivelAtualPercentual\": 75.0\n}"
+						},
+						"url": "{{baseUrl}}/reservatorios"
+					}
+				},
+				{
+					"name": "Buscar reservatório por ID",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/reservatorios/{{idReservatorio}}"
+					}
+				},
+				{
+					"name": "Atualizar reservatório",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idEstufa\": {{idEstufa}},\n  \"capacidadeMaxLitros\": 500.0,\n  \"nivelAtualPercentual\": 50.0\n}"
+						},
+						"url": "{{baseUrl}}/reservatorios/{{idReservatorio}}"
+					}
+				},
+				{
+					"name": "Excluir reservatório",
+					"request": {
+						"method": "DELETE",
+						"url": "{{baseUrl}}/reservatorios/{{idReservatorio}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "Telemetria",
+			"item": [
+				{
+					"name": "Registrar leitura (temperatura OK)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idEstufa\": {{idEstufa}},\n  \"temperaturaLida\": 22.0,\n  \"umidadeLida\": 65.0\n}"
+						},
+						"url": "{{baseUrl}}/telemetria"
+					}
+				},
+				{
+					"name": "Registrar leitura (gera alerta crítico)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idEstufa\": {{idEstufa}},\n  \"temperaturaLida\": 40.0,\n  \"umidadeLida\": 65.0\n}"
+						},
+						"url": "{{baseUrl}}/telemetria"
+					}
+				},
+				{
+					"name": "Listar leituras por estufa",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/telemetria/estufa/{{idEstufa}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "Alertas Críticos",
+			"item": [
+				{
+					"name": "Listar alertas ATIVOS",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/alertas/ativos"
+					}
+				},
+				{
+					"name": "Listar alertas por estufa",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/alertas/estufa/{{idEstufa}}"
+					}
+				},
+				{
+					"name": "Resolver alerta",
+					"request": {
+						"method": "PATCH",
+						"url": "{{baseUrl}}/alertas/1/resolver"
+					}
+				}
+			]
+		},
+		{
+			"name": "Colheitas",
+			"item": [
+				{
+					"name": "Registrar colheita",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idEstufa\": {{idEstufa}},\n  \"quantidadeKg\": 12.5,\n  \"qualidade\": \"EXCELENTE\"\n}"
+						},
+						"url": "{{baseUrl}}/colheitas"
+					}
+				},
+				{
+					"name": "Listar colheitas por estufa",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/colheitas/estufa/{{idEstufa}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "Regas",
+			"item": [
+				{
+					"name": "Registrar rega manual",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idEstufa\": {{idEstufa}},\n  \"tipoRega\": \"MANUAL\"\n}"
+						},
+						"url": "{{baseUrl}}/regas"
+					}
+				},
+				{
+					"name": "Registrar rega automática",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idEstufa\": {{idEstufa}},\n  \"tipoRega\": \"AUTOMATICA\"\n}"
+						},
+						"url": "{{baseUrl}}/regas"
+					}
+				},
+				{
+					"name": "Listar regas por estufa",
+					"request": {
+						"method": "GET",
+						"url": "{{baseUrl}}/regas/estufa/{{idEstufa}}"
+					}
+				}
+			]
+		}
+	]
+}
