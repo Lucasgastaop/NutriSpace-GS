@@ -74,7 +74,7 @@ public class AstronautaService {
 		Astronauta astronauta = astronautaRepository.findByEmail(dto.getEmail())
 				.orElseThrow(() -> new BusinessException("E-mail ou senha inválidos"));
 
-		if (!passwordEncoder.matches(dto.getSenha(), astronauta.getSenha())) {
+		if (!senhaConfere(dto.getSenha(), astronauta.getSenha())) {
 			throw new BusinessException("E-mail ou senha inválidos");
 		}
 
@@ -101,6 +101,14 @@ public class AstronautaService {
 		if (codificarSenha && dto.getSenha() != null && !dto.getSenha().isBlank()) {
 			astronauta.setSenha(passwordEncoder.encode(dto.getSenha()));
 		}
+	}
+
+	/** Aceita senha do DDL (texto) ou BCrypt (cadastro via API). */
+	private boolean senhaConfere(String senhaInformada, String senhaArmazenada) {
+		if (senhaArmazenada != null && senhaArmazenada.startsWith("$2")) {
+			return passwordEncoder.matches(senhaInformada, senhaArmazenada);
+		}
+		return senhaInformada != null && senhaInformada.equals(senhaArmazenada);
 	}
 
 	private AstronautaResponseDTO toResponse(Astronauta astronauta) {

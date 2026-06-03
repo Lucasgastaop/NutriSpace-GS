@@ -111,14 +111,9 @@ Swagger: `http://localhost:8080/swagger-ui.html`
 
 ## Autenticação JWT
 
-1. Login com astronauta **já cadastrado no Oracle**: `POST /auth/login`
+1. Login com astronauta cadastrado no Oracle: `POST /auth/login`
 
-```json
-{
-  "email": "lucas@nutrispace.com",
-  "senha": "senha123"
-}
-```
+Use o e-mail e senha gravados na tabela `TB_NS_ASTRONAUTA` (ex.: `lucas@nutrispace.com` / `senha123`).
 
 2. Envie o token nas demais rotas:
 
@@ -180,7 +175,7 @@ Importe os arquivos da pasta `postman/`:
 
 ## Deploy
 
-O deploy no Render pode usar o Oracle FIAP se a rede permitir conexão externa. Configure no Render:
+Configure no Render:
 
 | Variável | Valor |
 |----------|-------|
@@ -189,20 +184,16 @@ O deploy no Render pode usar o Oracle FIAP se a rede permitir conexão externa. 
 | `SPRING_DATASOURCE_USERNAME` | `rm563960` |
 | `SPRING_DATASOURCE_PASSWORD` | `020607` |
 
-Localmente / entrega FIAP:
+**Importante:** o Oracle FIAP limita sessões simultâneas por usuário (`ORA-02391`). Antes do deploy:
+
+- Encerre a API rodando **localmente** (mesmo usuário `rm563960`)
+- Aguarde 1–2 minutos para sessões antigas expirarem
+- O projeto já usa pool Hikari com **1 conexão** no perfil `oracle`
+
+A primeira subida no Render pode levar **3–4 minutos** (conexão + validação JPA no Oracle FIAP).
+
+Localmente:
 
 ```bash
 ./mvnw spring-boot:run
-```
-
-Docker (Oracle remoto acessível):
-
-```bash
-docker build -t nutrispace-api .
-docker run -p 8080:8080 \
-  -e SPRING_DATASOURCE_URL=jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL \
-  -e SPRING_DATASOURCE_USERNAME=rm563960 \
-  -e SPRING_DATASOURCE_PASSWORD=020607 \
-  -e SPRING_PROFILES_ACTIVE=oracle \
-  nutrispace-api
 ```

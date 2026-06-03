@@ -33,6 +33,6 @@ public class Astronauta {
 	@Column(name = "EMAIL", length = 60)
 	private String email;
 
-	@Column(name = "SENHA", length = 255)
+	@Column(name = "SENHA", length = 50)
 	private String senha;
 }
