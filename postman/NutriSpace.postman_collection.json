@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "nutrispace-api-collection",
 		"name": "NutriSpace API",
-		"description": "Collection NutriSpace (FIAP GS).\n\n**Como testar:**\n1. Importe esta collection e o environment (`NutriSpace-Local` ou `NutriSpace-Render`)\n2. Selecione o environment no canto superior direito\n3. Clique com o botão direito na collection → **Run collection**\n4. Mantenha **Keep variable values** marcado e clique em **Run NutriSpace API**\n\nAs requisições já estão na ordem correta de dependências.\n\n**Login:** use astronauta cadastrado no Oracle (ex.: `lucas@nutrispace.com` / `senha123`)",
+		"description": "Collection NutriSpace (FIAP GS).\n\n**Como testar:**\n1. Importe collection + environment (`NutriSpace-Local` ou `NutriSpace-Render`)\n2. Reinicie a API (perfil `oracle`)\n3. Run collection com **Delay 300ms** entre requisições\n4. Na 1ª execução após erro, **desmarque** Keep variable values\n\n**Login:** `lucas@nutrispace.com` / `senha123`",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"auth": {
@@ -132,7 +132,16 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test('Listar plantas OK', () => pm.response.to.have.status(200));"
+									"pm.test('Listar plantas OK', () => pm.response.to.have.status(200));",
+									"if (pm.response.code === 200) {",
+									"    const json = pm.response.json();",
+									"    if (json._embedded) {",
+									"        const items = json._embedded[Object.keys(json._embedded)[0]];",
+									"        if (items && items.length > 0 && items[0].idPlanta) {",
+									"            pm.collectionVariables.set('idPlanta', items[0].idPlanta);",
+									"        }",
+									"    }",
+									"}"
 								],
 								"type": "text/javascript"
 							}
@@ -232,7 +241,16 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test('Listar astronautas OK', () => pm.response.to.have.status(200));"
+									"pm.test('Listar astronautas OK', () => pm.response.to.have.status(200));",
+									"if (pm.response.code === 200) {",
+									"    const json = pm.response.json();",
+									"    if (json._embedded) {",
+									"        const items = json._embedded[Object.keys(json._embedded)[0]];",
+									"        if (items && items.length > 1 && items[1].idAstronauta) {",
+									"            pm.collectionVariables.set('idAstronautaNovo', items[1].idAstronauta);",
+									"        }",
+									"    }",
+									"}"
 								],
 								"type": "text/javascript"
 							}
@@ -324,7 +342,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"nome\": \"Admin Teste\",\n  \"cargo\": \"Comandante\",\n  \"email\": \"admin@nutrispace.com\",\n  \"senha\": \"123456\"\n}"
+							"raw": "{\n  \"nome\": \"Lucas Silva\",\n  \"cargo\": \"Engenheiro de Software Chefe\",\n  \"email\": \"lucas@nutrispace.com\",\n  \"senha\": \"senha123\"\n}"
 						},
 						"url": "{{baseUrl}}/astronautas/{{idAstronauta}}"
 					}
@@ -387,7 +405,16 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test('Listar estufas OK', () => pm.response.to.have.status(200));"
+									"pm.test('Listar estufas OK', () => pm.response.to.have.status(200));",
+									"if (pm.response.code === 200) {",
+									"    const json = pm.response.json();",
+									"    if (json._embedded) {",
+									"        const items = json._embedded[Object.keys(json._embedded)[0]];",
+									"        if (items && items.length > 0 && items[0].idEstufa) {",
+									"            pm.collectionVariables.set('idEstufa', items[0].idEstufa);",
+									"        }",
+									"    }",
+									"}"
 								],
 								"type": "text/javascript"
 							}
@@ -487,7 +514,16 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test('Listar reservatórios OK', () => pm.response.to.have.status(200));"
+									"pm.test('Listar reservatórios OK', () => pm.response.to.have.status(200));",
+									"if (pm.response.code === 200) {",
+									"    const json = pm.response.json();",
+									"    if (json._embedded) {",
+									"        const items = json._embedded[Object.keys(json._embedded)[0]];",
+									"        if (items && items.length > 0 && items[0].idReservatorio) {",
+									"            pm.collectionVariables.set('idReservatorio', items[0].idReservatorio);",
+									"        }",
+									"    }",
+									"}"
 								],
 								"type": "text/javascript"
 							}

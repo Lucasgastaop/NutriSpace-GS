@@ -44,7 +44,7 @@ public class AstronautaService {
 			throw new BusinessException("Já existe um astronauta cadastrado com este e-mail");
 		}
 		Astronauta astronauta = new Astronauta();
-		aplicarDados(astronauta, dto, true);
+		aplicarDados(astronauta, dto);
 		return toResponse(astronautaRepository.save(astronauta));
 	}
 
@@ -54,7 +54,7 @@ public class AstronautaService {
 			throw new BusinessException("Já existe outro astronauta cadastrado com este e-mail");
 		}
 		Astronauta astronauta = buscarEntidade(id);
-		aplicarDados(astronauta, dto, true);
+		aplicarDados(astronauta, dto);
 		return toResponse(astronautaRepository.save(astronauta));
 	}
 
@@ -94,12 +94,12 @@ public class AstronautaService {
 				.orElseThrow(() -> new ResourceNotFoundException("Astronauta não encontrado com id: " + id));
 	}
 
-	private void aplicarDados(Astronauta astronauta, AstronautaRequestDTO dto, boolean codificarSenha) {
+	private void aplicarDados(Astronauta astronauta, AstronautaRequestDTO dto) {
 		astronauta.setNome(dto.getNome());
 		astronauta.setCargo(dto.getCargo());
 		astronauta.setEmail(dto.getEmail());
-		if (codificarSenha && dto.getSenha() != null && !dto.getSenha().isBlank()) {
-			astronauta.setSenha(passwordEncoder.encode(dto.getSenha()));
+		if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
+			astronauta.setSenha(dto.getSenha());
 		}
 	}
 

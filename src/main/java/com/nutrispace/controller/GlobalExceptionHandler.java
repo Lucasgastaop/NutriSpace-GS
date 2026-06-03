@@ -3,12 +3,15 @@ package com.nutrispace.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.nutrispace.exception.BusinessException;
 import com.nutrispace.exception.ResourceNotFoundException;
@@ -27,6 +30,29 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ApiErrorRecord> handleBusiness(BusinessException ex) {
 		return ResponseEntity.badRequest()
 				.body(ApiErrorRecord.of(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
+	}
+
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<ApiErrorRecord> handleDataIntegrity(DataIntegrityViolationException ex) {
+		String message = "Violação de integridade dos dados";
+		String cause = ex.getMostSpecificCause().getMessage();
+		if (cause != null && cause.contains("ORA-00001")) {
+			message = "Registro duplicado: verifique se a sequence Oracle está sincronizada com os IDs existentes";
+		}
+		return ResponseEntity.status(HttpStatus.CONFLICT)
+				.body(ApiErrorRecord.of(HttpStatus.CONFLICT.value(), message));
+	}
+
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<ApiErrorRecord> handleUnreadableJson(HttpMessageNotReadableException ex) {
+		return ResponseEntity.badRequest()
+				.body(ApiErrorRecord.of(HttpStatus.BAD_REQUEST.value(), "JSON inválido no corpo da requisição"));
+	}
+
+	@ExceptionHandler(NoResourceFoundException.class)
+	public ResponseEntity<ApiErrorRecord> handleNoResource(NoResourceFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(ApiErrorRecord.of(HttpStatus.NOT_FOUND.value(), "Recurso não encontrado: " + ex.getResourcePath()));
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)

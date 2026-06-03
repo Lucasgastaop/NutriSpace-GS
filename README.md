@@ -113,7 +113,16 @@ Swagger: `http://localhost:8080/swagger-ui.html`
 
 1. Login com astronauta cadastrado no Oracle: `POST /auth/login`
 
-Use o e-mail e senha gravados na tabela `TB_NS_ASTRONAUTA` (ex.: `lucas@nutrispace.com` / `senha123`).
+Use o e-mail e senha gravados na tabela `TB_NS_ASTRONAUTA`.
+
+- Padrão do DDL: `lucas@nutrispace.com` / `senha123`
+- Se a collection Postman já rodou antes, o banco pode estar com `admin@nutrispace.com` / `123456` — restaure com:
+
+```sql
+UPDATE tb_ns_astronauta
+SET email = 'lucas@nutrispace.com', senha = 'senha123'
+WHERE id_astronauta = 1;
+```
 
 2. Envie o token nas demais rotas:
 
@@ -183,12 +192,13 @@ Configure no Render:
 | `SPRING_DATASOURCE_URL` | `jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL` |
 | `SPRING_DATASOURCE_USERNAME` | `rm563960` |
 | `SPRING_DATASOURCE_PASSWORD` | `020607` |
+| `HIKARI_MAX_POOL_SIZE` | `1` |
 
 **Importante:** o Oracle FIAP limita sessões simultâneas por usuário (`ORA-02391`). Antes do deploy:
 
 - Encerre a API rodando **localmente** (mesmo usuário `rm563960`)
 - Aguarde 1–2 minutos para sessões antigas expirarem
-- O projeto já usa pool Hikari com **1 conexão** no perfil `oracle`
+- No Render use `HIKARI_MAX_POOL_SIZE=1`; localmente o padrão é **2** (evita timeout com Postman)
 
 A primeira subida no Render pode levar **3–4 minutos** (conexão + validação JPA no Oracle FIAP).
 
