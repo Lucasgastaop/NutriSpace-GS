@@ -14,7 +14,7 @@ API REST em **Java 17** e **Spring Boot 3.4**, com persistência em **Oracle**, 
 | Deploy (API pública) | https://nutrispace-gs.onrender.com |
 | Swagger / OpenAPI | https://nutrispace-gs.onrender.com/swagger-ui.html |
 | Vídeo apresentação (até 10 min) | `https://youtu.be/SEU_VIDEO` |
-| Pitch GS (até 3 min) | `https://youtu.be/SEU_PITCH` |
+| Pitch GS (até 3 min) | `[https://youtu.be/SEU_PITCH](https://youtu.be/-nUa6N2nbdg?si=1uGrQe2PrzVvx0sx)` |
 
 ---
 
